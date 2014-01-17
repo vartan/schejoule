@@ -9,17 +9,20 @@
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script>
-var classList;
-$.get( "courseList.txt", function( data ) {
-	classList = decodeEntities(data).split("\n");
+var classList = [];
+var jqxhr = $.getJSON( "classes.json", function(data) {
+	$.each( data, function( key, val ) {
+		classList.push(key);
+	});
 	$( "#tags" ).autocomplete({
 	    source: function(request, response) {
         	var results = $.ui.autocomplete.filter(classList, request.term);
-	
     	    response(results.slice(0, 10));
-    	}
-	});
+    		}
+	})
 });
+
+
 var decodeEntities = (function() {
   // this prevents any overhead from creating the object each time
   var element = document.createElement('div');
