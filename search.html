@@ -1,0 +1,50 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery UI Autocomplete - Default functionality</title>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script>
+var classList;
+$.get( "courseList.txt", function( data ) {
+	classList = decodeEntities(data).split("\n");
+	$( "#tags" ).autocomplete({
+	    source: function(request, response) {
+        	var results = $.ui.autocomplete.filter(classList, request.term);
+	
+    	    response(results.slice(0, 10));
+    	}
+	});
+});
+var decodeEntities = (function() {
+  // this prevents any overhead from creating the object each time
+  var element = document.createElement('div');
+
+  function decodeHTMLEntities (str) {
+    if(str && typeof str === 'string') {
+      // strip script/html tags
+      str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+      str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+      element.innerHTML = str;
+      str = element.textContent;
+      element.textContent = '';
+    }
+
+    return str;
+  }
+
+  return decodeHTMLEntities;
+})();
+</script>
+</head>
+<body>
+<div class="ui-widget">
+<label for="tags">Tags: </label>
+<input id="tags">
+</div>
+</body>
+</html>
