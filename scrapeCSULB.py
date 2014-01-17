@@ -1,6 +1,7 @@
 import urllib2
 import json
 import HTMLParser
+import re
 h = HTMLParser.HTMLParser()
 from BeautifulSoup import BeautifulSoup
 # or if you're using BeautifulSoup4:
@@ -40,15 +41,23 @@ def load_classes(url):
 			pastHeader = False
 			labels = ["ID","Notes","Type","Days","Time","Open","Location","Instructor","Comment"];
 			for sectionRow in groupRows:
-				sectionInfo = sectionRow.findAll("td");
-				sectionNum = sectionRow.find("th").getText();
-				thisClass={};
 				if not pastHeader:
 					pastHeader=True;
 					continue
-				for i in range(1, len(labels)):
-					thisClass[labels[i]] = h.unescape(sectionInfo[i].getText())
-				print sectionNum
+				sectionInfo = sectionRow.findAll("td");
+				sectionNum = sectionRow.find("th").getText()
+				thisClass={};
+				for i in range(0, len(labels)):
+					if i==1:	#we don't care about notes currently
+						continue;
+					isOpen = len(sectionInfo[i].findAll("img"))>0;
+					val = h.unescape(sectionInfo[i].getText().strip())
+					re.sub("\s\s+" , " ", val)
+					if isOpen:
+						thisClass[labels[i]]=True;
+					elif val and not val.isspace():
+						thisClass[labels[i]] = val;
+
 				sections[sectionNum] = thisClass;
 	return classes;
 departmentClassLists = get_all_department_URLs();
@@ -64,5 +73,5 @@ for departmentClassListURL in departmentClassLists:
 			parsedDept = True;
 		except:pass
 fo = open("classes.json", "w")
-fo.write(json.dumps(allClasses,indent=2))
+fo.write(json.dumps(allClasses,separators=(',',':')))
 fo.close()
