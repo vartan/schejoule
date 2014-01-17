@@ -21,6 +21,9 @@
 			source: function(request, response) {
 		    	var results = $.ui.autocomplete.filter(classList, request.term);
 			    response(results.slice(0, 10));
+			},
+			select: function(event,ui) {
+				submitClass();
 			}
 		})
 			$("#courseForm").submit(submitClass);
