@@ -9,45 +9,67 @@
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script>
-var classList = [];
-var jqxhr = $.getJSON( "classes.json", function(data) {
-	$.each( data, function( key, val ) {
-		classList.push(key);
-	});
-	$( "#tags" ).autocomplete({
-	    source: function(request, response) {
-        	var results = $.ui.autocomplete.filter(classList, request.term);
-    	    response(results.slice(0, 10));
-    		}
+	var classList = [];
+	var jsondata;
+	$.getJSON( "classes.json", function(data) {
+		jsondata = data;
+		$.each( data, function( key, val ) {
+			classList.push(key);
+		});
+	
+		$( "#course" ).autocomplete({
+			source: function(request, response) {
+		    	var results = $.ui.autocomplete.filter(classList, request.term);
+			    response(results.slice(0, 10));
+			}
+		})
+			$("#courseForm").submit(submitClass);
+
 	})
-});
+	function submitClass() {
+		var currentValue = $.ui.autocomplete.filter(classList, ( $("#course")[0].value ) )[0];
+		if(currentValue) {
+			$("#course")[0].value = currentValue; 
+			$('#course').autocomplete('close');
+			var out = "";
+			var course = jsondata[currentValue];
+			var code = course["Code"];
+			var title = course["Title"];
+			var sections = course["Sections"];
+			out+="<table border=1>"
+
+			sectionList = [];
+			$.each(sections,function(key,value) {
+				sectionList.push(key);
+
+			});
+			sectionList.sort();
+			sectionList.forEach(function(section) {
+				console.log(section)
+				var info = sections[section];
+				out+="<tr><td>"+section+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\"http://www.ratemyprofessors.com/search.jsp?query=california+state+university+long+beach+"+info["Instructor"].split(" ")[0]+"&queryoption=TEACHER&search_submit=Search\">"+info["Instructor"]+"</a></td><td>"+(info["Open"]?"Open :)":"Full :(")+"</td></tr>"
+
+			});
+			out+="</table>"
+			$('#info')[0].innerHTML=out;
+		}
+	}
 
 
-var decodeEntities = (function() {
-  // this prevents any overhead from creating the object each time
-  var element = document.createElement('div');
 
-  function decodeHTMLEntities (str) {
-    if(str && typeof str === 'string') {
-      // strip script/html tags
-      str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
-      str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
-      element.innerHTML = str;
-      str = element.textContent;
-      element.textContent = '';
-    }
 
-    return str;
-  }
-
-  return decodeHTMLEntities;
-})();
 </script>
 </head>
 <body>
+
 <div class="ui-widget">
-<label for="tags">Tags: </label>
-<input id="tags">
+<form id="courseForm" action="#">
+<label for="course">Enter Course: </label>
+<input id="course" />
+</form>
+<br/><br/>
+<div id="info">
+</div>
 </div>
 </body>
 </html>
