@@ -5,14 +5,28 @@
 <head>
 <meta charset="utf-8">
 <title>Schejoule, a CSULB Scheduling tool by Michael Vartan</title>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<!-- Latest compiled and minified CSS -->
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="jquery-ui-1.10.3.custom.css" rel="stylesheet">
+
+
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+
 <script>
 	var classList = [];
 	var jsondata;
+
+
 	$.getJSON( "classes.json", function(data) {
 		jsondata = data;
+		
 		$.each( data, function( key, val ) {
 			classList.push(key);
 		});
@@ -26,20 +40,36 @@
 				submitClass();
 			}
 		})
+		var hash = window.location.hash.substr(1);
+		if(hash) {
+			$( "#course" )[0].value = hash.split('+').join(' ');
+			submitClass();
+		}
 			$("#courseForm").submit(submitClass);
 
 	})
+	function jumpToAnchor(h){
+	    var url = location.href;               //Save down the URL without hash.
+		h = h.split(' ').join('+');
+
+	    window.location.hash="#"+h;
+	    
+	    console.log(h+": "+window.location.hash);
+
+	}
 	function submitClass() {
 		var currentValue = $.ui.autocomplete.filter(classList, ( $("#course")[0].value ) )[0];
 		if(currentValue) {
 			$("#course")[0].value = currentValue; 
 			$('#course').autocomplete('close');
+			
+			jumpToAnchor(currentValue);
 			var out = "";
 			var course = jsondata[currentValue];
 			var code = course["Code"];
 			var title = course["Title"];
 			var sections = course["Sections"];
-			out+="<table border=1>"
+			out+="<div class=\"table-responsive\"><table class=\"table \"><thead><tr><th>Sec.</th><th>Type</th><th>Days</th><th>Time</th><th>Instructor</th><th>Availability</th></tr></thead>"
 
 			sectionList = [];
 			$.each(sections,function(key,value) {
@@ -48,14 +78,16 @@
 			});
 			sectionList.sort();
 			sectionList.forEach(function(section) {
-				console.log(section)
+
 				var info = sections[section];
-				out+="<tr><td>"+section+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\"http://www.ratemyprofessors.com/search.jsp?query=california+state+university+long+beach+"+info["Instructor"].split(" ")[0]+"&queryoption=TEACHER&search_submit=Search\">"+info["Instructor"]+"</a></td><td>"+(info["Open"]?"Open :)":"Full :(")+"</td></tr>"
+				var rowClass = info["Open"]?"active":""
+				out+="<tr class=\""+rowClass+"\"><td>"+section+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\"http://www.ratemyprofessors.com/search.jsp?query=california+state+university+long+beach+"+info["Instructor"].split(" ")[0]+"&queryoption=TEACHER&search_submit=Search\">"+info["Instructor"]+"</a></td><td>"+(info["Open"]?"<span class=\"label label-success glyphicon glyphicon-ok\"> Open</span>":"<span class=\"label label-danger glyphicon glyphicon-remove\"> Full</span>")+"</td></tr>"
 
 			});
-			out+="</table>"
+			out+="</table></div>"
 			$('#info')[0].innerHTML=out;
 		}
+		return false; // don't submit the form!
 	}
 
 
@@ -65,14 +97,35 @@
 </head>
 <body>
 
-<div class="ui-widget">
-<form id="courseForm" action="#">
-<label for="course">Enter Course: </label>
-<input id="course" placeholder="Start searching a course..."/>
-</form>
-<br/><br/>
+<nav class="navbar navbar-default" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="#">Schejoule</a>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+    <form class="navbar-form navbar-left" role="search" id="courseForm" action="#">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Enter a course..." id="course">
+      </div>
+      <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+    </form>
+      </li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+
+<div class="container">
 <div id="info">
-</div>
 </div>
 </body>
 </html>
