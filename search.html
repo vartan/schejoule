@@ -73,6 +73,7 @@
 			console.log("found professor info")
 			displayClass();
 		}
+		return false;
 	}
 	function displayClass() {
 		var currentValue = $.ui.autocomplete.filter(classList, ( $("#course")[0].value ) )[0];
