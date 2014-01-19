@@ -87,7 +87,7 @@
 			var code = course["Code"];
 			var title = course["Title"];
 			var sections = course["Sections"];
-			out+="<div class=\"table-responsive\"><table class=\"table \"><thead><tr><th>Sec.</th><th>Type</th><th>Days</th><th>Time</th><th>Instructor</th><th>Rating</th><th>Availability</th></tr></thead>"
+			out+="<div class=\"table-responsive\"><table class=\"table \"><thead><tr><th>Sec.</th><th>Class #</th><th>Type</th><th>Days</th><th>Time</th><th>Instructor</th><th>Rating</th><th>Availability</th></tr></thead>"
 
 			sectionList = [];
 			$.each(sections,function(key,value) {
@@ -105,7 +105,7 @@
 					professorLink = "http://www.ratemyprofessors.com/ShowRatings.jsp?tid="+professordata[info["Instructor"]][0]["rmp_id"];
 				}
 				var rowClass = info["Open"]?"active":""
-				out+="<tr class=\""+rowClass+"\"><td>"+section+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\""+professorLink+"\">"+info["Instructor"]+"</a></td><td>"+professorRating+"</td><td>"+(info["Open"]?"<span class=\"label label-success glyphicon glyphicon-ok\"> Open</span>":"<span class=\"label label-danger glyphicon glyphicon-remove\"> Full</span>")+"</td></tr>"
+				out+="<tr class=\""+rowClass+"\"><td>"+section+"</td><td>"+info["ID"]+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\""+professorLink+"\">"+info["Instructor"]+"</a></td><td>"+professorRating+"</td><td>"+(info["Open"]?"<span class=\"label label-success glyphicon glyphicon-ok\"> Open</span>":"<span class=\"label label-danger glyphicon glyphicon-remove\"> Full</span>")+"</td></tr>"
 
 			});
 			out+="</table></div>"
