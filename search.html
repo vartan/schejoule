@@ -81,11 +81,12 @@
 			$("#course")[0].value = currentValue; 
 			$('#course').autocomplete('close');
 			
-			jumpToAnchor(course["Code"]);
+
 			var out = "";
 			var course = coursedata[currentValue];
 			var code = course["Code"];
 			var title = course["Title"];
+			jumpToAnchor(course["Code"]);
 			var sections = course["Sections"];
 			out+="<div class=\"table-responsive\"><table class=\"table \"><thead><tr><th>Sec.</th><th>Class #</th><th>Type</th><th>Days</th><th>Time</th><th>Instructor</th><th>Rating</th><th>Availability</th></tr></thead>"
 
