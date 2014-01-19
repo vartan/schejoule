@@ -81,7 +81,7 @@
 			$("#course")[0].value = currentValue; 
 			$('#course').autocomplete('close');
 			
-			jumpToAnchor(currentValue);
+			jumpToAnchor(course["Code"]);
 			var out = "";
 			var course = coursedata[currentValue];
 			var code = course["Code"];
