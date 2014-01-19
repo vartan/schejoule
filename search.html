@@ -128,7 +128,7 @@
 				console.log(ratingClass)
 				var rowClass = info["Open"]?"success":"";
 				
-				out+="<tr class=\""+rowClass+"\"><td>"+section+"</td><td>"+info["ID"]+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\""+professorLink+"\">"+info["Instructor"]+"</a></td><td><a class=\"label label-"+ratingClass+"\" href=\""+professorLink+"\">"+(professorRating>0?parseFloat(professorRating).toFixed(2):professorRating)+"</a> <small>("+totalRatings+")</small><td>"+(info["Open"]?"<span class=\"btn btn-sm btn-success glyphicon glyphicon-ok\" disabled=\"disabled\"> Open</span>":"<span class=\"btn btn-sm btn-danger glyphicon glyphicon-remove\" disabled=\"disabled\"> Full</span>")+"</td></tr>"
+				out+="<tr class=\""+rowClass+"\"><td>"+section+"</td><td>"+info["ID"]+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\""+professorLink+"\">"+info["Instructor"]+"</a></td><td><a class=\"label label-"+ratingClass+"\" href=\""+professorLink+"\">"+(professorRating>0?parseFloat(professorRating).toFixed(2)+" <small>("+totalRatings+")":professorRating)+"</a></small><td>"+(info["Open"]?"<span class=\"btn btn-sm btn-success glyphicon glyphicon-ok\" disabled=\"disabled\"> Open</span>":"<span class=\"btn btn-sm btn-danger glyphicon glyphicon-remove\" disabled=\"disabled\"> Full</span>")+"</td></tr>"
 
 			});
 			out+="</table></div>"
