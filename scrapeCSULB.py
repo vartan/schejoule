@@ -7,6 +7,7 @@ from BeautifulSoup import BeautifulSoup
 # or if you're using BeautifulSoup4:
 # from bs4 import BeautifulSoup
 SEMESTER_BY_SUBJECT = "http://www.csulb.edu/depts/enrollment/registration/class_schedule/Spring_2014/By_Subject"
+
 def get_all_department_URLs():
 	soup = BeautifulSoup(urllib2.urlopen(SEMESTER_BY_SUBJECT).read())
 	departmentURLs = [];
@@ -57,7 +58,6 @@ def load_classes(url):
 						thisClass[labels[i]]=True;
 					elif val and not val.isspace():
 						thisClass[labels[i]] = val;
-
 				sections[sectionNum] = thisClass;
 	return classes;
 departmentClassLists = get_all_department_URLs();
@@ -66,7 +66,6 @@ for departmentClassListURL in departmentClassLists:
 	parsedDept = False;	
 	while not parsedDept:
 		try:
-			
 			added_classes = load_classes(departmentClassListURL);
 			allClasses.update(added_classes);
 			print json.dumps(added_classes, indent=2);		
@@ -75,3 +74,4 @@ for departmentClassListURL in departmentClassLists:
 fo = open("classes.json", "w")
 fo.write(json.dumps(allClasses,separators=(',',':')))
 fo.close()
+
