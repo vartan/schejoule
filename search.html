@@ -104,7 +104,7 @@
 					professorLink = "http://www.ratemyprofessors.com/ShowRatings.jsp?tid="+professordata[info["Instructor"]][0]["rmp_id"];
 				}
 				var rowClass = info["Open"]?"active":""
-				out+="<tr class=\""+rowClass+"\"><td>"+section+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\""+professorLink+"\">"+info["Instructor"]+"</a></td><td>"+(info["Open"]?"<span class=\"label label-success glyphicon glyphicon-ok\"> Open</span>":"<span class=\"label label-danger glyphicon glyphicon-remove\"> Full</span>")+"</td><td>"+professorRating+"</td></tr>"
+				out+="<tr class=\""+rowClass+"\"><td>"+section+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\""+professorLink+"\">"+info["Instructor"]+"</a></td><td>"+professorRating+"</td><td>"+(info["Open"]?"<span class=\"label label-success glyphicon glyphicon-ok\"> Open</span>":"<span class=\"label label-danger glyphicon glyphicon-remove\"> Full</span>")+"</td></tr>"
 
 			});
 			out+="</table></div>"
