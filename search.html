@@ -99,13 +99,36 @@
 
 				var info = sections[section];
 				var professorRating = "N/A";
+				console.log("ghjkl")
+				var totalRatings = 0
+				console.log("eoeoeo");
+				var ratingClass = "default"
 				var professorLink = "http://www.ratemyprofessors.com/search.jsp?query=california+state+university+long+beach+"+info["Instructor"].split(" ")[0]+"&queryoption=TEACHER&search_submit=Search";
-				if(professordata[info["Instructor"]] != undefined && professordata[info["Instructor"]].length==1) {
+				if(professordata[info["Instructor"]] == undefined ) {
+					professorRating = "None"
+				} else if (professordata[info["Instructor"]].length!=1) {
+					professorRating = "Click"
+					ratingClass = "success"
+				} else {
+					
+					totalRatings =    professordata[info["Instructor"]][0]["totalRatings"];
 					professorRating = professordata[info["Instructor"]][0]["averageRating"];
+					ratingNumber = parseFloat(professorRating);
+					if(ratingNumber>4.5)
+						ratingClass = "primary"
+					else if(ratingNumber>3.5)
+						ratingClass = "info"
+					else if(ratingNumber > 2.5)
+						ratingClass = "warning"
+					else
+						ratingClass = "danger"
 					professorLink = "http://www.ratemyprofessors.com/ShowRatings.jsp?tid="+professordata[info["Instructor"]][0]["rmp_id"];
 				}
-				var rowClass = info["Open"]?"active":""
-				out+="<tr class=\""+rowClass+"\"><td>"+section+"</td><td>"+info["ID"]+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\""+professorLink+"\">"+info["Instructor"]+"</a></td><td>"+professorRating+"</td><td>"+(info["Open"]?"<span class=\"label label-success glyphicon glyphicon-ok\"> Open</span>":"<span class=\"label label-danger glyphicon glyphicon-remove\"> Full</span>")+"</td></tr>"
+				console.log("asdf");
+				console.log(ratingClass)
+				var rowClass = info["Open"]?"success":"";
+				
+				out+="<tr class=\""+rowClass+"\"><td>"+section+"</td><td>"+info["ID"]+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\""+professorLink+"\">"+info["Instructor"]+"</a></td><td><a class=\"label label-"+ratingClass+"\" href=\""+professorLink+"\">"+(professorRating>0?parseFloat(professorRating).toFixed(2):professorRating)+"</a> <small>("+totalRatings+")</small><td>"+(info["Open"]?"<span class=\"btn btn-sm btn-success glyphicon glyphicon-ok\" disabled=\"disabled\"> Open</span>":"<span class=\"btn btn-sm btn-danger glyphicon glyphicon-remove\" disabled=\"disabled\"> Full</span>")+"</td></tr>"
 
 			});
 			out+="</table></div>"
