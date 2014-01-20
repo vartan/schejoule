@@ -162,18 +162,16 @@ margin-bottom:10px
 			sectionList.forEach(function(section) {
 
 				var info = sections[section];
-				var professorRating = "N/A";
-				console.log("ghjkl")
+				var professorRating = "None";
 				var totalRatings = 0
-				console.log("eoeoeo");
 				var ratingClass = "default"
 				var professorLink = "http://www.ratemyprofessors.com/search.jsp?query=california+state+university+long+beach+"+info["Instructor"].split(" ")[0]+"&queryoption=TEACHER&search_submit=Search";
 				if(professordata[info["Instructor"]] == undefined ) {
 					professorRating = "None"
-				} else if (professordata[info["Instructor"]].length!=1) {
+				} else if (professordata[info["Instructor"]].length>1) {
 					professorRating = "Click"
 					ratingClass = "success"
-				} else {
+				} else if (professordata[info["Instructor"]].length==1) {
 					
 					totalRatings =    professordata[info["Instructor"]][0]["totalRatings"];
 					professorRating = professordata[info["Instructor"]][0]["averageRating"];
