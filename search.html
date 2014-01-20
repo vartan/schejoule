@@ -88,7 +88,7 @@
 			var title = course["Title"];
 			jumpToAnchor(course["Code"]);
 			var sections = course["Sections"];
-			out+="<div class=\"table-responsive\"><table class=\"table \"><thead><tr><th>Sec.</th><th>Class #</th><th>Type</th><th>Days</th><th>Time</th><th>Instructor</th><th>Rating</th><th>Availability</th></tr></thead>"
+			out+="<div class=\"table-responsive\"><table class=\"table \"><thead><tr><th>Sec.</th><th>Class #</th><th>Type</th><th>Days</th><th>Time</th><th>Location</th><th>Instructor</th><th>Rating</th><th>Availability</th></tr></thead>"
 
 			sectionList = [];
 			$.each(sections,function(key,value) {
@@ -129,7 +129,17 @@
 				console.log(ratingClass)
 				var rowClass = info["Open"]?"success":"";
 				
-				out+="<tr class=\""+rowClass+"\"><td>"+section+"</td><td>"+info["ID"]+"</td><td>"+info["Type"]+"</td><td>"+info["Days"]+"</td><td>"+info["Time"]+"</td><td><a href=\""+professorLink+"\">"+info["Instructor"]+"</a></td><td><a class=\"label label-"+ratingClass+"\" href=\""+professorLink+"\">"+(professorRating>0?parseFloat(professorRating).toFixed(2)+" <small>("+totalRatings+")":professorRating)+"</a></small><td>"+(info["Open"]?"<span class=\"btn btn-sm btn-success glyphicon glyphicon-ok\" disabled=\"disabled\"> Open</span>":"<span class=\"btn btn-sm btn-danger glyphicon glyphicon-remove\" disabled=\"disabled\"> Full</span>")+"</td></tr>"
+				out+="<tr class=\""+rowClass+"\">" + 
+					"<td>"+section+"</td>" + 
+					"<td>"+info["ID"]+"</td>" + 
+					"<td>"+info["Type"]+"</td>" +
+					"<td>"+info["Days"]+"</td>" +
+					"<td>"+info["Time"]+"</td>" +
+					"<td>"+info["Location"]+"</td>" +
+					"<td><a href=\""+professorLink+"\">"+info["Instructor"]+"</a></td>" +
+					"<td><a class=\"label label-"+ratingClass+"\" href=\""+professorLink+"\">"+(professorRating>0?parseFloat(professorRating).toFixed(2)+" <small>("+totalRatings+")":professorRating)+"</small></a></td>" + 
+					"<td>"+(info["Open"]?"<span class=\"btn btn-sm btn-success glyphicon glyphicon-ok\" disabled=\"disabled\"> Open</span>":"<span class=\"btn btn-sm btn-danger glyphicon glyphicon-remove\" disabled=\"disabled\"> Full</span>")+"</td>" +
+				"</tr>"
 
 			});
 			out+="</table></div>"
