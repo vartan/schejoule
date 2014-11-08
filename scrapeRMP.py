@@ -1,7 +1,7 @@
 import urllib2
 import urllib
 import json
-baseURL = "http://www.ratemyprofessors.com/solr/interim.jsp?select?rows=20&json.nl=map&wt=json&q="
+baseURL = "http://search.mtvnservices.com/typeahead/suggest/?solrformat=true&rows=10&siteName=rmp&q="
 def get_professor_data(name, start=0):
 	try:
 		if start:
