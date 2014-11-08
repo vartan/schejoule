@@ -5,7 +5,7 @@ import re
 h = HTMLParser.HTMLParser()
 from BeautifulSoup import BeautifulSoup
 SEMESTER_BY_SUBJECT = ("http://www.csulb.edu/depts/enrollment/registration/"
-					  "class_schedule/Fall_2014/By_Subject")
+					  "class_schedule/Spring_2015/By_Subject")
 
 def get_all_department_URLs():
 	"""Loads the list of classes page (SEMESTER_BY_SUBJECT)
