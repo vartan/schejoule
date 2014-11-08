@@ -165,7 +165,7 @@ margin-bottom:10px
 				var professorRating = "None";
 				var totalRatings = 0
 				var ratingClass = "default"
-				var professorLink = "http://www.ratemyprofessors.com/search.jsp?query=california+state+university+long+beach+"+info["Instructor"].split(" ")[0]+"&queryoption=TEACHER&search_submit=Search";
+				var professorLink = "http://www.ratemyprofessors.com/search.jsp?queryBy=schoolId&schoolName=California+State+University+Long+Beach&sid=162&query="+info["Instructor"].split(" ")[0];
 				if(professordata[info["Instructor"]] == undefined ) {
 					professorRating = "None"
 				} else if (professordata[info["Instructor"]].length>1) {
