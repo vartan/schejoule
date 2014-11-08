@@ -168,8 +168,10 @@ margin-bottom:10px
 				var professorLink = "http://www.ratemyprofessors.com/search.jsp?queryBy=schoolId&schoolName=California+State+University+Long+Beach&sid=162&query="+info["Instructor"].split(" ")[0];
 				if(professordata[info["Instructor"]] == undefined ) {
 					professorRating = "None"
+					if(info["Instructor"] != "Staff")
+					professorRating = "Search"; // temporary bugfix
 				} else if (professordata[info["Instructor"]].length>1) {
-					professorRating = "Click"
+					professorRating = "Search"
 					ratingClass = "success"
 				} else if (professordata[info["Instructor"]].length==1) {
 					
