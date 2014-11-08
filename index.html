@@ -1,0 +1,274 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+<!--Created by Michael Vartan-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>Schejoule, a CSULB Scheduling tool</title>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<!-- Latest compiled and minified CSS -->
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="jquery-ui-1.10.3.custom.css" rel="stylesheet">
+
+
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<style>
+/* Make Table Responsive --- */
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+.table-responsive table, .table-responsive thead, .table-responsive th, .table-responsive tr, .table-responsive td {
+width:100%;
+display: block;
+}
+/* Hide table headers (but not display:none, for accessibility) */
+.table-responsive thead tr {
+position: absolute;
+top: -9999px;
+left: -9999px;
+}
+.table-responsive {
+border:none !important
+}
+.table-responsive tr {
+
+box-shadow:0 0 3px #aaa;
+margin:10px auto !important;
+width:95%;
+border-radius:7px
+
+}
+.table-responsive td {
+/* Behave like a row */
+font-size:1.2em;
+border: none !important; 
+padding-left: 50% !important;
+border-bottom: 1px solid #eee !important;
+position: relative;
+
+}
+
+.table-responsive td:before {
+/* Now, like a table header */
+position: absolute;
+/* Top / left values mimic padding */
+top: 6px; left: 6px;
+width: 45%;
+padding-right: 10px;
+white-space: nowrap;
+
+}
+tbody {
+display:block
+}
+tr {
+margin-bottom:10px
+}
+/* -- LABEL THE DATA -- */
+.table-responsive td:nth-of-type(1):before { content: "Section"; }
+.table-responsive td:nth-of-type(2):before { content: "Class Number"; }
+.table-responsive td:nth-of-type(3):before { content: "Type"; }
+.table-responsive td:nth-of-type(4):before { content: "Days"; }
+.table-responsive td:nth-of-type(5):before { content: "Time"; }
+.table-responsive td:nth-of-type(6):before { content: "Location"; }
+.table-responsive td:nth-of-type(7):before { content: "Instructor"; }
+.table-responsive td:nth-of-type(8):before { content: "Rating"; }
+.table-responsive td:nth-of-type(9):before { content: "Availability"; }
+
+ 
+ </style>
+
+<script>
+	var classList = [];
+	var coursedata;
+	var professordata;
+
+
+	$.getJSON( "classes.json", function(data) {
+		coursedata = data;
+		
+		$.each( data, function( key, val ) {
+			classList.push(key);
+		});
+	
+		$( "#course" ).autocomplete({
+			source: function(request, response) {
+		    	var results = $.ui.autocomplete.filter(classList, request.term);
+			    response(results.slice(0, 10));
+			},
+			select: function(event,ui) {
+				setTimeout(submitClass,100);
+			}
+		})
+		var hash = window.location.hash.substr(1);
+		if(hash) {
+			$( "#course" )[0].value = hash.split('+').join(' ');
+			submitClass();
+		}
+			$("#courseForm").submit(submitClass);
+
+	})
+	$.getJSON( "professors.json", function(data) {
+		professordata = data;
+	});
+	function jumpToAnchor(h){
+	    var url = location.href;               //Save down the URL without hash.
+		h = h.split(' ').join('+');
+
+	    window.location.hash="#"+h;
+	    
+	    console.log(h+": "+window.location.hash);
+
+	}
+	function submitClass() {
+		if(professordata==null) {
+			setTimeout(submitClass,50)
+			console.log("waiting for professor info")
+		} else {
+			console.log("found professor info")
+			displayClass();
+		}
+		return false;
+	}
+	function displayClass() {
+		var currentValue = $.ui.autocomplete.filter(classList, ( $("#course")[0].value ) )[0];
+		if(currentValue) {
+			$("#course")[0].value = currentValue; 
+			$('#course').autocomplete('close');
+			
+
+			var out = "";
+			var course = coursedata[currentValue];
+			var code = course["Code"];
+			var title = course["Title"];
+			jumpToAnchor(course["Code"]);
+			var sections = course["Sections"];
+			out+="<div class=\"table-responsive\"><table class=\"table \"><thead><tr><th>Sec.</th><th>Class #</th><th>Type</th><th>Days</th><th>Time</th><th>Location</th><th>Instructor</th><th>Rating</th><th>Availability</th></tr></thead><tbody>"
+
+			sectionList = [];
+			$.each(sections,function(key,value) {
+				sectionList.push(key);
+
+			});
+			sectionList.sort();
+			sectionList.forEach(function(section) {
+
+				var info = sections[section];
+				var professorRating = "None";
+				var totalRatings = 0
+				var ratingClass = "default"
+				var professorLink = "http://www.ratemyprofessors.com/search.jsp?queryBy=schoolId&schoolName=California+State+University+Long+Beach&sid=162&query="+info["Instructor"].split(" ")[0];
+				if(professordata[info["Instructor"]] == undefined ) {
+					professorRating = "None"
+					if(info["Instructor"] != "Staff")
+					professorRating = "Search"; // temporary bugfix
+				} else if (professordata[info["Instructor"]].length>1) {
+					professorRating = "Search"
+					ratingClass = "success"
+				} else if (professordata[info["Instructor"]].length==1) {
+					
+					totalRatings =    professordata[info["Instructor"]][0]["totalRatings"];
+					professorRating = professordata[info["Instructor"]][0]["averageRating"];
+					ratingNumber = parseFloat(professorRating);
+					if(ratingNumber>4.5)
+						ratingClass = "primary"
+					else if(ratingNumber>3.5)
+						ratingClass = "info"
+					else if(ratingNumber > 2.5)
+						ratingClass = "warning"
+					else
+						ratingClass = "danger"
+					professorLink = "http://www.ratemyprofessors.com/ShowRatings.jsp?tid="+professordata[info["Instructor"]][0]["rmp_id"];
+				}
+				console.log("asdf");
+				console.log(ratingClass)
+				var rowClass = info["Open"]?"success":"";
+				
+				out+="<tr class=\""+rowClass+"\">" + 
+					"<td>"+section+"</td>" + 
+					"<td>"+info["ID"]+"</td>" + 
+					"<td>"+info["Type"]+"</td>" +
+					"<td>"+info["Days"]+"</td>" +
+					"<td>"+info["Time"]+"</td>" +
+					"<td>"+info["Location"]+"</td>" +
+					"<td><a href=\""+professorLink+"\">"+info["Instructor"]+"</a></td>" +
+					"<td><a class=\"label label-"+ratingClass+"\" href=\""+professorLink+"\">"+(professorRating>0?parseFloat(professorRating).toFixed(2)+" <small>("+totalRatings+")":professorRating)+"</small></a></td>" + 
+					"<td>"+(info["Open"]?"<span class=\"btn btn-sm btn-success glyphicon glyphicon-ok\" disabled=\"disabled\"> Open</span>":"<span class=\"btn btn-sm btn-danger glyphicon glyphicon-remove\" disabled=\"disabled\"> Full</span>")+"</td>" +
+				"</tr>"
+
+			});
+			out+="</tbody></table></div>"
+			$('#info')[0].innerHTML=out;
+		}
+		return false; // don't submit the form!
+	}
+
+
+
+
+</script>
+</head>
+<body>
+
+<nav class="navbar navbar-default" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="#">Schejoule</a>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+    <form class="navbar-form navbar-left" role="search" id="courseForm" action="#">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Enter a course..." id="course">
+      </div>
+      <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+    </form>
+      </li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+
+<div class="container">
+<div id="info">
+Please use the search function to find your classes.
+</div>
+<br/><br/>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Responsive-Schejoule -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-7388947224467540"
+     data-ad-slot="6925392360"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-38383194-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>
