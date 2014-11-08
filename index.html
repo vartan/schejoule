@@ -105,7 +105,7 @@ margin-bottom:10px
 			    response(results.slice(0, 10));
 			},
 			select: function(event,ui) {
-				submitClass();
+				setTimeout(submitClass,100);
 			}
 		})
 		var hash = window.location.hash.substr(1);
